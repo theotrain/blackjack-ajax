@@ -23,6 +23,7 @@ post '/name' do
     params[:action][0] = '' #remove dollar sign
     session[:bet] = params[:action].to_i
     session[:settle_ok] = true
+    session[:show_deal_top] = false
 
     redirect "/game"
   else

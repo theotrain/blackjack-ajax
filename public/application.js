@@ -9,8 +9,6 @@ $(document).ready(function(){
 
 function animate_cards() {
   $(document).ready(function(){
-
-    
     //alert('animate');
     $("#throw_dealer").css({left:-300, top:-400});
     $("#throw_dealer").rotate(-200);
@@ -91,6 +89,4 @@ function player_stay() {
     });
     return false;
   });
-}
-
 }
