@@ -59,6 +59,7 @@ post '/game/player/stay' do
   if hand_value(session[:dealer_hand]) < 17
     deal_card(session[:dealer_hand])
     session[:show_deal_top] = true
+    
   else
     session[:show_deal_top] = false
   end
