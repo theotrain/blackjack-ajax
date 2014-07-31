@@ -1,0 +1,104 @@
+<div id='game'>
+  <h3>Dealer's Cards</h3>
+
+  <% session[:dealer_hand].each_with_index do |c,i| %>
+    <span id='card'><img <%= i==session[:dealer_hand].length-1 && session[:show_deal_top] ? "id='throw_dealer'" : "" %> src="../images/cards/<%= c[0]+c[1] %>.gif" ></span>
+  <% end %>
+
+  <% if session[:dealer_hand].length == 1 %>
+    <span id='card'><img src="../images/cards/back.gif" ></span>
+  <% end %>
+
+  <% if session[:show_deal] || session[:show_deal_top] %>
+  <script>animate_cards();</script>
+  <% end %>
+
+  <h3 style="margin-top:20px;"><%= session[:name].capitalize %>'s Cards</h3>
+
+  <% session[:player_hand].each_with_index do |c,i| %>
+    <span id='card'><img <%= i==session[:player_hand].length-1 && session[:show_deal] ? "id='throw_player'" : "" %> src="../images/cards/<%= c[0]+c[1] %>.gif" ></span>
+  <% end %>
+
+  <% session[:show_deal] = false %>
+
+  <% @player_value = hand_value(session[:player_hand]) %>
+  <h4 style="margin-top:20px;">You have <%= @player_value %>.</h4>
+
+
+
+  <% if !session[:show_deal_top] %>
+    <!-- display rest of page -->
+    <% if @player_value < 21 && !session[:dealer_turn] %>
+      <!-- hit or stay buttons -->
+      
+      <p id="action_buttons">
+        <!-- <form id="player_action" name="player_action" action="/game/player_action" method="POST"> -->
+        <!-- <form id="player_action" name="player_action" action="#" method="POST">
+          <input style="margin-right:10px;" type="submit" value="Hit" class= "btn btn-success btn-large" name="action" />
+          <input type="submit" value="Stay" class= "btn btn-warning btn-large" name="action" /> -->
+
+          <form id="hit_form" action="/game/player/hit" method='post'>
+            <input type="submit" class="btn btn-success btn-large" value="Hit" />
+          </form>
+          <form id="stay_form" action="/game/player/stay" method='post'>
+            <input type="submit" class="btn btn-warning btn-large" value="Stay" />
+        </form>
+      </p>
+    <% end %>
+
+    <% if @player_value == 21 %>
+      <h4 style="color:white;">You win!</h4>
+      <% settle_wager('win') %>
+      <% @game_over = true %>
+    <% end %>
+
+    <% if @player_value > 21 %>
+      <h4 style="color:white;">You BUSTED!</h4>
+      <% settle_wager('lose') %>
+      <% @game_over = true %>
+    <% end %>
+
+    <% if session[:dealer_turn] %> 
+      <% @dealer_value = hand_value(session[:dealer_hand]) %>
+      <% @player_value = hand_value(session[:player_hand]) %>
+      <h4>The dealer has <%= @dealer_value %>.</h4>
+      <% if @dealer_value > 21 %>
+        <h4 style="color:white;">Dealer busted, you win!</h4>
+        <% settle_wager('win') %>
+      <% elsif @dealer_value >= @player_value %>
+        <h4 style="color:white;">Sorry, you lose.</h4>
+        <% settle_wager('lose') %>
+      <% else %>
+        <h4 style="color:white;">Huzzah, you win!</h4>
+        <% settle_wager('win') %>
+      <% end %>
+    <% end %>
+
+    <% if @game_over || session[:dealer_turn] %>
+      <h4>You have $<%= session[:cash] %>.</h4>
+      <% if session[:cash] < BET_MIN %>
+        <h4>Minimum bet is $<%= BET_MIN %>. Get out of my casino you bum!</h4>
+      <% else %>
+      <!-- play again -->
+        <p id="action_buttons">
+          <form action='/game/play_again' method='post'>
+          
+          <h4>Place your bets for the next hand.</h4>
+          <% @increment = (session[:cash] / 5).round(-1) %>
+          <% i = BET_MIN %>
+          <% begin %>
+            <input class='btn btn-success btn-large' name='action' type='submit' value="$<%= i %>">
+            <% i += @increment %>
+          <% end until i > (session[:cash] * BET_MAX_PROPORTION) - @increment %>
+          </form>
+          <!-- <form id="play_again" action="/game/play_again" method="POST">
+            <input type="submit" value="Another Hand?" class= "btn btn-success btn-large" name="action" />
+          </form> -->
+          </p>
+        <% end %>
+    <% end %>
+  <% else %>
+    <h4>The dealer has <%= hand_value(session[:dealer_hand]) %>.</h4>
+  <!-- display NOTHING while we wait for animation to finish and resend form -->
+  <% end %>
+</div>

@@ -1,0 +1,38 @@
+body
+{
+background-image:url('../images/bg_tile.jpg');
+background-repeat:repeat-y repeat-x;
+} 
+
+body {
+  color: #a4ceb7;
+}
+
+a {
+  color: #7bfadd;
+}
+
+a:hover,
+a:focus {
+  color: #cbf7ed;
+}
+#card {
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+#throw_dealer {
+  position:relative;
+  /*visibility:hidden;*/
+}
+#throw_player {
+  position:relative;
+  /*visibility:hidden;*/
+}
+form#hit_form {
+  float: left;
+  margin-right: 10px;
+}
+
+form#stay_form {
+  float: left;
+}

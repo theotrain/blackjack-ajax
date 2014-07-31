@@ -1,0 +1,15 @@
+<h3 style="color:white;">Welcome to Blackjack!</h3>
+<h4>Set Player Name</h4>
+
+<form action='/name' method='post'>
+<input type='text' name='name'>
+<br /><br />
+<h4>You have $<%= START_DOLLARS %>.</h4>
+<h4>How much to bet on your first hand?</h4>
+<% @increment = (START_DOLLARS / 5).round(-1) %>
+<% i = BET_MIN %>
+<% begin %>
+  <input class='btn btn-success btn-large' name='action' type='submit' value="$<%= i %>">
+  <% i += @increment %>
+<% end until i > (START_DOLLARS * BET_MAX_PROPORTION) - @increment %>
+</form>
